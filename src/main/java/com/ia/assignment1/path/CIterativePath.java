@@ -9,6 +9,7 @@ import com.ia.assignment1.agent.CAgent;
 import com.ia.assignment1.map.CGrid;
 import com.ia.assignment1.map.CMap;
 import com.ia.assignment1.map.EDirection;
+import com.ia.assignment1.map.EGridType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,14 +22,18 @@ public class CIterativePath {
 
     public static double setOptimalPath(CAgent pObjAgent, CMap pObjMap, int pIntX, int pIntY, double pDblDiscountValue) {
 
-        if (pIntX == 3 && pIntY == 2) {
-            int x = 10;
+        CGrid objGrid = pObjMap.getGrid(pIntX, pIntY);
+
+        if (objGrid.getType() == EGridType.TERMINAL) {
             return 0;
-        } else if (pIntX == 3 && pIntY == 1) {
+        }
+
+        if (objGrid.getType() == EGridType.WALL) {
             return 0;
         }
 
         double dblValue = pObjMap.getGridRewardValue(pIntX, pIntY);
+
         double dblOriginal = pObjMap.getGridValuePrevState(pIntX, pIntY);
 
         CGrid objUp = new CGrid(0.0, EDirection.UP);
@@ -43,10 +48,10 @@ public class CIterativePath {
         lstGrid.add(objLeft);
         lstGrid.add(objRight);
 
-        double dblNorthUtility = pObjMap.getGridValuePrevState(pIntX, pIntY + 1);
-        double dblSouthUtility = pObjMap.getGridValuePrevState(pIntX, pIntY - 1);
-        double dblWestUtility = pObjMap.getGridValuePrevState(pIntX - 1, pIntY);
-        double dblEastUtility = pObjMap.getGridValuePrevState(pIntX + 1, pIntY);
+        double dblNorthUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.UP);
+        double dblSouthUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.DOWN);
+        double dblWestUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.LEFT);
+        double dblEastUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.RIGHT);
 
         objUp.setValue((pObjAgent.getPCorrect() * dblNorthUtility) + (pObjAgent.getPLeft() * dblWestUtility) + (pObjAgent.getPRight() * dblEastUtility));
         objDown.setValue((pObjAgent.getPCorrect() * dblSouthUtility) + (pObjAgent.getPLeft() * dblEastUtility) + (pObjAgent.getPRight() * dblWestUtility));

@@ -7,16 +7,16 @@ package com.ia.assignment1;
 
 import com.ia.assignment1.agent.CAgent;
 import com.ia.assignment1.map.CGrid;
-import com.ia.assignment1.test.CTest;
 import com.ia.assignment1.map.CMap;
 import com.ia.assignment1.map.EDirection;
 import com.ia.assignment1.path.CIterativePath;
+import com.ia.assignment1.path.CPolicyPath;
 
 /**
  *
  * @author Bryden
  */
-public class main {
+public class main1_policy {
 
     /**
      * @param args the command line arguments
@@ -35,31 +35,46 @@ public class main {
 
         CGrid[][] dblGrid = objMap.getGridValue();
 
-        double dblDiff = 100.0;
-
         int intIteration = 0;
 
-        while (dblDiff > 0.0102) {
-            dblDiff = 0;
+        int intChanges = 10;
 
+        for (int intCounter = objMap.getHeight() - 1; intCounter >= 0; intCounter--) {
+            for (int intCount = 0; intCount < objMap.getWidth(); intCount++) {
+                CPolicyPath.updateCurrentUtility(objAgent, objMap, intCount, intCounter, 0.99);
+            }
+        }
+        objMap.commitState();
+        while (intChanges > 0) {
+
+            System.out.println(intChanges);
+
+            if (intChanges > 10) {
+                int x = 0;
+            }
+
+            intChanges = 0;
             for (int intCounter = objMap.getHeight() - 1; intCounter >= 0; intCounter--) {
                 for (int intCount = 0; intCount < objMap.getWidth(); intCount++) {
-                    double dblDelta = Math.abs(CIterativePath.setOptimalPath(objAgent, objMap, intCount, intCounter, 0.99));
+                    int intReturn = CPolicyPath.updateCurrentUtility(objAgent, objMap, intCount, intCounter, 0.99);
+                    if (intReturn > 0) {
+                        System.out.print("Change at " + intCount + " " + intCounter + "; ");
+                    }
 
-                    dblDiff = (dblDelta > dblDiff) ? dblDelta : dblDiff;
-
+                    intChanges += intReturn;
+                    
                 }
             }
 
+            System.out.println("");
+            
             objMap.commitState();
 
             intIteration++;
 
-//            if (intIteration == 50) {
-//                break;
-//            }
-
-            System.out.println(dblDiff);
+            if (intIteration > 500) {
+                break;
+            }
 
         }
 

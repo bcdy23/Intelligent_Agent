@@ -14,7 +14,7 @@ public class CMap {
     private final int intWidth;
     private final int intHeight;
 
-    double[][] aryGrids;
+    CGrid[][] aryGrids;
     double[][] aryGrids2;
     double[][] aryGridsReward;
 
@@ -24,35 +24,43 @@ public class CMap {
         intWidth = pIntWidth;
         intHeight = pIntHeight;
 
-        aryGrids = new double[intHeight][intWidth];
+        aryGrids = new CGrid[intHeight][intWidth];
         aryGrids2 = new double[intHeight][intWidth];
         aryGridsReward = new double[intHeight][intWidth];
 
         aryPath = new EDirection[intHeight][intWidth];
 
         for (int intCount = 0; intCount < intWidth * intHeight; intCount++) {
-            aryGrids[intCount / intWidth][intCount % intWidth] = pDblBaseValue;
+            aryGrids[intCount / intWidth][intCount % intWidth] = new CGrid(pDblBaseValue);
             aryGridsReward[intCount / intWidth][intCount % intWidth] = pDblBaseValue;
             aryPath[intCount / intWidth][intCount % intWidth] = EDirection.UP;
         }
+
+        aryGrids[1][1].setType(EGridType.WALL);
+        aryGrids[1][2].setType(EGridType.WALL);
+        aryGrids[1][3].setType(EGridType.WALL);
+        aryGrids[4][4].setType(EGridType.WALL);
+        aryGrids[5][1].setType(EGridType.WALL);
+
     }
 
     public void setValues(int[] pIntGridPos, double pDblValue) {
         for (int intCount = 0; intCount < pIntGridPos.length; intCount++) {
-            aryGrids[pIntGridPos[intCount] / intWidth][pIntGridPos[intCount] % intWidth] = pDblValue;
-            aryGrids2[pIntGridPos[intCount] / intWidth][pIntGridPos[intCount] % intWidth] = pDblValue;
+            aryGrids[pIntGridPos[intCount] / intWidth][pIntGridPos[intCount] % intWidth].setValue(pDblValue);
+            //aryGrids2[pIntGridPos[intCount] / intWidth][pIntGridPos[intCount] % intWidth] = pDblValue;
             aryGridsReward[pIntGridPos[intCount] / intWidth][pIntGridPos[intCount] % intWidth] = pDblValue;
         }
     }
 
     public void commitState() {
         for (int intCount = 0; intCount < intWidth * intHeight; intCount++) {
-            aryGrids2[intCount / intWidth][intCount % intWidth] = aryGrids[intCount / intWidth][intCount % intWidth];
+            aryGrids2[intCount / intWidth][intCount % intWidth] = aryGrids[intCount / intWidth][intCount % intWidth].getValue();
         }
     }
 
     public void setValue(int pIntX, int pIntY, double pDblValue, EDirection objDirection) {
-        aryGrids[pIntY][pIntX] = pDblValue;
+        aryGrids[pIntY][pIntX].setValue(pDblValue);
+        aryGrids[pIntY][pIntX].setDirection(objDirection);
         aryPath[pIntY][pIntX] = objDirection;
     }
 
@@ -70,6 +78,47 @@ public class CMap {
         }
 
         return aryGridsReward[pIntY][pIntX];
+    }
+
+    public double getNeighbourGridUtility(int pIntX, int pIntY, EDirection pObjDirection) {
+        int intX = pIntX;
+        int intY = pIntY;
+
+        switch (pObjDirection) {
+            case UP:
+                intY += 1;
+                break;
+            case DOWN:
+                intY -= 1;
+                break;
+            case LEFT:
+                intX -= 1;
+                break;
+            case RIGHT:
+                intX += 1;
+                break;
+        }
+
+        if (intX >= intWidth) {
+            intX = intWidth - 1;
+        } else if (intX < 0) {
+            intX = 0;
+        }
+
+        if (intY >= intHeight) {
+            intY = intHeight - 1;
+        } else if (intY < 0) {
+            intY = 0;
+        }
+
+        CGrid objNeighbour = aryGrids[intY][intX];
+
+        if (objNeighbour.getType() == EGridType.WALL) {
+            return getGridValuePrevState(pIntX, pIntY);
+        }
+
+        return getGridValuePrevState(intX, intY);
+
     }
 
     public double getGridValuePrevState(int pIntX, int pIntY) {
@@ -101,11 +150,15 @@ public class CMap {
             pIntY = 0;
         }
 
-        return aryGrids[pIntY][pIntX];
+        return aryGrids[pIntY][pIntX].getValue();
     }
 
-    public double[][] getGridValue() {
+    public CGrid[][] getGridValue() {
         return aryGrids;
+    }
+
+    public CGrid getGrid(int pIntX, int pIntY) {
+        return aryGrids[pIntY][pIntX];
     }
 
     public EDirection[][] getPathValue() {
