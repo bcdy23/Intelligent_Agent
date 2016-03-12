@@ -39,7 +39,7 @@ public class main {
 
         int intIteration = 0;
 
-        while (dblDiff > 0.0102) {
+        while (dblDiff > 0.85) {
             dblDiff = 0;
 
             for (int intCounter = objMap.getHeight() - 1; intCounter >= 0; intCounter--) {

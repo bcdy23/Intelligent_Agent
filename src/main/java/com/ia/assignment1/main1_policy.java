@@ -37,6 +37,8 @@ public class main1_policy {
 
         int intIteration = 0;
 
+        int intTotalConstant = 0;
+
         int intChanges = 10;
 
         for (int intCounter = objMap.getHeight() - 1; intCounter >= 0; intCounter--) {
@@ -45,13 +47,9 @@ public class main1_policy {
             }
         }
         objMap.commitState();
-        while (intChanges > 0) {
+        while (intTotalConstant < 20) {
 
-            System.out.println(intChanges);
-
-            if (intChanges > 10) {
-                int x = 0;
-            }
+            System.out.println(intTotalConstant);
 
             intChanges = 0;
             for (int intCounter = objMap.getHeight() - 1; intCounter >= 0; intCounter--) {
@@ -59,15 +57,19 @@ public class main1_policy {
                     int intReturn = CPolicyPath.updateCurrentUtility(objAgent, objMap, intCount, intCounter, 0.99);
                     if (intReturn > 0) {
                         System.out.print("Change at " + intCount + " " + intCounter + "; ");
+                        intTotalConstant = 0;
                     }
 
                     intChanges += intReturn;
-                    
                 }
             }
 
+            if (intChanges == 0) {
+                intTotalConstant++;
+            }
+
             System.out.println("");
-            
+
             objMap.commitState();
 
             intIteration++;
