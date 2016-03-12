@@ -12,7 +12,8 @@ package com.ia.assignment1.map;
 public enum EGridType {
     NORMAL(1),
     TERMINAL(2),
-    WALL(3);
+    WALL(3),
+    START(4);
     
     private final int intValue;
 

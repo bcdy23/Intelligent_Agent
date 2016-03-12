@@ -6,23 +6,67 @@
 package com.ia.assignment1.path;
 
 import com.ia.assignment1.agent.CAgent;
-import com.ia.assignment1.map.CGrid;
+import com.ia.assignment1.map.CState;
 import com.ia.assignment1.map.CMap;
-import com.ia.assignment1.map.EDirection;
 import com.ia.assignment1.map.EGridType;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  *
  * @author Bryden
  */
-public class CPolicyPath {
+public class CPolicyPath extends CMDP {
 
-    public static int trainCurrentUtility(CAgent pObjAgent, CMap pObjMap, int pIntX, int pIntY, double pDblDiscountValue) {
+    public CPolicyPath(CMap pObjMap, CAgent pObjAgent) {
+        super(pObjMap, pObjAgent);
+    }
 
-        CGrid objGrid = pObjMap.getGrid(pIntX, pIntY);
+    @Override
+    public int calculateOptimalPolicy() {
+        int intIteration = 0;
+
+        int intChanges = 10;
+
+        while (intChanges > 0) {
+
+            System.out.println(intChanges);
+
+            for (int intTraining = 0; intTraining < 10; intTraining++) {
+
+                CPolicy[][] aryNewPolicy = new CPolicy[objMap.getHeight()][objMap.getWidth()];
+
+                for (int intCounter = objMap.getHeight() - 1; intCounter >= 0; intCounter--) {
+                    for (int intCount = 0; intCount < objMap.getWidth(); intCount++) {
+                        trainCurrentUtility(aryNewPolicy, intCount, intCounter, 0.99);
+                    }
+                }
+
+                lstPolicy.add(aryNewPolicy);
+            }
+
+            CPolicy[][] aryNewPolicy = new CPolicy[objMap.getHeight()][objMap.getWidth()];
+
+            intChanges = 0;
+            for (int intCounter = objMap.getHeight() - 1; intCounter >= 0; intCounter--) {
+                for (int intCount = 0; intCount < objMap.getWidth(); intCount++) {
+                    intChanges += updateCurrentUtility(aryNewPolicy, intCount, intCounter, 0.99);;
+                }
+            }
+
+            lstPolicy.add(aryNewPolicy);
+
+            intIteration++;
+
+            if (intIteration > 500) {
+                break;
+            }
+        }
+
+        return intIteration;
+    }
+
+    public int trainCurrentUtility(CPolicy[][] pAryPolicy, int pIntX, int pIntY, double pDblDiscountValue) {
+
+        CState objGrid = objMap.getGrid(pIntX, pIntY);
 
         if (objGrid.getType() == EGridType.TERMINAL) {
             return 0;
@@ -32,40 +76,17 @@ public class CPolicyPath {
             return 0;
         }
 
-        double dblValue = pObjMap.getGridRewardValue(pIntX, pIntY);
+        double dblValue = objGrid.getReward();
 
-        CGrid objUp = new CGrid(0.0, EDirection.UP);
-        CGrid objDown = new CGrid(0.0, EDirection.DOWN);
-        CGrid objLeft = new CGrid(0.0, EDirection.LEFT);
-        CGrid objRight = new CGrid(0.0, EDirection.RIGHT);
+        CPolicy objCurrentPolicy = this.getCurrentPolicy(pIntX, pIntY);
 
-        List<CGrid> lstGrid = new ArrayList<>();
-
-        lstGrid.add(objUp);
-        lstGrid.add(objDown);
-        lstGrid.add(objLeft);
-        lstGrid.add(objRight);
-
-        double dblNorthUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.UP);
-        double dblSouthUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.DOWN);
-        double dblWestUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.LEFT);
-        double dblEastUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.RIGHT);
-
-        objUp.setValue((pObjAgent.getPCorrect() * dblNorthUtility) + (pObjAgent.getPLeft() * dblWestUtility) + (pObjAgent.getPRight() * dblEastUtility));
-        objDown.setValue((pObjAgent.getPCorrect() * dblSouthUtility) + (pObjAgent.getPLeft() * dblEastUtility) + (pObjAgent.getPRight() * dblWestUtility));
-        objLeft.setValue((pObjAgent.getPCorrect() * dblWestUtility) + (pObjAgent.getPLeft() * dblSouthUtility) + (pObjAgent.getPRight() * dblNorthUtility));
-        objRight.setValue((pObjAgent.getPCorrect() * dblEastUtility) + (pObjAgent.getPLeft() * dblNorthUtility) + (pObjAgent.getPRight() * dblSouthUtility));
-
-        double dblCurrentUtility = lstGrid.get(objGrid.getDirection().getValue() - 1).getValue();
-        EDirection objDirection = lstGrid.get(objGrid.getDirection().getValue() - 1).getDirection();
-
-        pObjMap.setValue(pIntX, pIntY, dblValue + pDblDiscountValue * dblCurrentUtility, objDirection);
+        pAryPolicy[pIntY][pIntX] = new CPolicy(dblValue + pDblDiscountValue * objCurrentPolicy.getUtility(), objCurrentPolicy.getDirection());
         return 0;
     }
 
-    public static int updateCurrentUtility(CAgent pObjAgent, CMap pObjMap, int pIntX, int pIntY, double pDblDiscountValue) {
+    public int updateCurrentUtility(CPolicy[][] pAryPolicy, int pIntX, int pIntY, double pDblDiscountValue) {
 
-        CGrid objGrid = pObjMap.getGrid(pIntX, pIntY);
+        CState objGrid = objMap.getGrid(pIntX, pIntY);
 
         if (objGrid.getType() == EGridType.TERMINAL) {
             return 0;
@@ -75,94 +96,19 @@ public class CPolicyPath {
             return 0;
         }
 
-        double dblValue = pObjMap.getGridRewardValue(pIntX, pIntY);
+        double dblValue = objGrid.getReward();
 
-        CGrid objUp = new CGrid(0.0, EDirection.UP);
-        CGrid objDown = new CGrid(0.0, EDirection.DOWN);
-        CGrid objLeft = new CGrid(0.0, EDirection.LEFT);
-        CGrid objRight = new CGrid(0.0, EDirection.RIGHT);
+        CPolicy objOptimalPolicy = this.getOptimalPolicy(pIntX, pIntY);
 
-        List<CGrid> lstGrid = new ArrayList<>();
+        CPolicy objCurrentPolicy = this.getCurrentPolicy(pIntX, pIntY);
 
-        lstGrid.add(objUp);
-        lstGrid.add(objDown);
-        lstGrid.add(objLeft);
-        lstGrid.add(objRight);
-
-        double dblNorthUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.UP);
-        double dblSouthUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.DOWN);
-        double dblWestUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.LEFT);
-        double dblEastUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.RIGHT);
-
-        objUp.setValue((pObjAgent.getPCorrect() * dblNorthUtility) + (pObjAgent.getPLeft() * dblWestUtility) + (pObjAgent.getPRight() * dblEastUtility));
-        objDown.setValue((pObjAgent.getPCorrect() * dblSouthUtility) + (pObjAgent.getPLeft() * dblEastUtility) + (pObjAgent.getPRight() * dblWestUtility));
-        objLeft.setValue((pObjAgent.getPCorrect() * dblWestUtility) + (pObjAgent.getPLeft() * dblSouthUtility) + (pObjAgent.getPRight() * dblNorthUtility));
-        objRight.setValue((pObjAgent.getPCorrect() * dblEastUtility) + (pObjAgent.getPLeft() * dblNorthUtility) + (pObjAgent.getPRight() * dblSouthUtility));
-
-        double dblCurrentUtility = lstGrid.get(objGrid.getDirection().getValue() - 1).getValue();
-        EDirection objDirection = lstGrid.get(objGrid.getDirection().getValue() - 1).getDirection();
-
-        Collections.sort(lstGrid);
-
-        double dblMaxUtility = lstGrid.get(3).getValue();
-
-        if (dblMaxUtility > dblCurrentUtility) {
-
-            System.out.print(objGrid.getDirection().getValue() + " to " + lstGrid.get(3).getDirection().getValue() + " ");
-
-            pObjMap.setValue(pIntX, pIntY, dblValue + pDblDiscountValue * dblMaxUtility, lstGrid.get(3).getDirection());
+        if (objOptimalPolicy.getUtility() > objCurrentPolicy.getUtility()) {
+            pAryPolicy[pIntY][pIntX] = new CPolicy(dblValue + pDblDiscountValue * objOptimalPolicy.getUtility(), objOptimalPolicy.getDirection());
             return 1;
         }
 
-        pObjMap.setValue(pIntX, pIntY, dblValue + pDblDiscountValue * dblCurrentUtility, objDirection);
+        pAryPolicy[pIntY][pIntX] = new CPolicy(dblValue + pDblDiscountValue * objCurrentPolicy.getUtility(), objCurrentPolicy.getDirection());
         return 0;
-    }
-
-    public static double setOptimalPath(CAgent pObjAgent, CMap pObjMap, int pIntX, int pIntY, double pDblDiscountValue) {
-
-        CGrid objGrid = pObjMap.getGrid(pIntX, pIntY);
-
-        if (objGrid.getType() == EGridType.TERMINAL) {
-            return 0;
-        }
-
-        if (objGrid.getType() == EGridType.WALL) {
-            return 0;
-        }
-
-        double dblValue = pObjMap.getGridRewardValue(pIntX, pIntY);
-
-        double dblOriginal = pObjMap.getGridValuePrevState(pIntX, pIntY);
-
-        CGrid objUp = new CGrid(0.0, EDirection.UP);
-        CGrid objDown = new CGrid(0.0, EDirection.DOWN);
-        CGrid objLeft = new CGrid(0.0, EDirection.LEFT);
-        CGrid objRight = new CGrid(0.0, EDirection.RIGHT);
-
-        List<CGrid> lstGrid = new ArrayList<>();
-
-        lstGrid.add(objUp);
-        lstGrid.add(objDown);
-        lstGrid.add(objLeft);
-        lstGrid.add(objRight);
-
-        double dblNorthUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.UP);
-        double dblSouthUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.DOWN);
-        double dblWestUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.LEFT);
-        double dblEastUtility = pObjMap.getNeighbourGridUtility(pIntX, pIntY, EDirection.RIGHT);
-
-        objUp.setValue((pObjAgent.getPCorrect() * dblNorthUtility) + (pObjAgent.getPLeft() * dblWestUtility) + (pObjAgent.getPRight() * dblEastUtility));
-        objDown.setValue((pObjAgent.getPCorrect() * dblSouthUtility) + (pObjAgent.getPLeft() * dblEastUtility) + (pObjAgent.getPRight() * dblWestUtility));
-        objLeft.setValue((pObjAgent.getPCorrect() * dblWestUtility) + (pObjAgent.getPLeft() * dblSouthUtility) + (pObjAgent.getPRight() * dblNorthUtility));
-        objRight.setValue((pObjAgent.getPCorrect() * dblEastUtility) + (pObjAgent.getPLeft() * dblNorthUtility) + (pObjAgent.getPRight() * dblSouthUtility));
-
-        Collections.sort(lstGrid);
-
-        dblValue += pDblDiscountValue * lstGrid.get(3).getValue();
-
-        pObjMap.setValue(pIntX, pIntY, dblValue, lstGrid.get(3).getDirection());
-
-        return dblValue - dblOriginal;
     }
 
 }
