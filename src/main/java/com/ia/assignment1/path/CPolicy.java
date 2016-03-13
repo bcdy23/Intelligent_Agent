@@ -11,6 +11,8 @@ import com.ia.assignment1.map.EDirection;
  *
  * @author Bryden
  */
+
+//Class to store utility value and policy
 public class CPolicy implements Comparable {
 
     private double dblUtility;
@@ -37,6 +39,7 @@ public class CPolicy implements Comparable {
         return objPathDirection;
     }
 
+    //Comparable to allow sorting to find best utility
     @Override
     public int compareTo(Object t) {
         CPolicy objCompareGrid = (CPolicy) t;

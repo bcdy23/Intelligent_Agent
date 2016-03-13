@@ -27,7 +27,7 @@ public class main1_policy {
 
         CAgent objAgent = new CAgent(0.8, 0.1, 0.1);
 
-        CMDP objMDP = new CPolicyPath(objMap, objAgent);
+        CMDP objMDP = new CPolicyPath(objMap, objAgent, 0.99);
 
         int intTotalIterations = objMDP.calculateOptimalPolicy();
 

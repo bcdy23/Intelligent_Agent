@@ -9,6 +9,8 @@ package com.ia.assignment1.map;
  *
  * @author Bryden
  */
+
+//Enum to store policy path direction
 public enum EDirection {
     UP(1),
     DOWN(2),

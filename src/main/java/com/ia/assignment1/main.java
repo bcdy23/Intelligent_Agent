@@ -27,7 +27,7 @@ public class main {
 
         CAgent objAgent = new CAgent(0.8, 0.1, 0.1);
 
-        CMDP objMDP = new CIterativePath(objMap, objAgent);
+        CMDP objMDP = new CIterativePath(objMap, objAgent, 0.99, 3.6);
 
         int intTotalIterations = objMDP.calculateOptimalPolicy();
 

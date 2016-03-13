@@ -9,8 +9,12 @@ package com.ia.assignment1.agent;
  *
  * @author Bryden
  */
+
+//Class to store agent and its noise value
+//Used in calculation of optimal path
 public class CAgent {
 
+    //Noise value of agent
     double dblDeviateLeft;
     double dblDeviateRight;
 

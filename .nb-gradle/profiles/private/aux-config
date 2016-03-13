@@ -5,31 +5,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
       <group>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/settings.gradle</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/main1_policy.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/map/EGridType.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/map/CMap.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/map/EDirection.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/map/CGrid.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/build.gradle</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/path/CIterativePath.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/agent/CAgent.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/main.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/path/CPolicyPath.java</file>
+        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/map/CMapFactory.java</file>
       </group>
     </open-files>
     <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
       <group>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/settings.gradle</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/main1_policy.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/map/CMap.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/map/CPolicy.java</file>
         <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/map/CMapFactory.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/build.gradle</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/agent/CAgent.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/main.java</file>
-        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/path/CPolicyPath.java</file>
+        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/path/CIterativePath.java</file>
+        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/ui/GUI_Main.java</file>
+        <file>file:/C:/Users/Bryden/Programming/IA/Assignment_1/src/main/java/com/ia/assignment1/ui/PMap.java</file>
       </group>
     </open-files>
   </auxiliary>

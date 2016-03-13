@@ -9,10 +9,14 @@ package com.ia.assignment1.map;
  *
  * @author Bryden
  */
+
+//Class to store state of gridworld
 public class CState {
 
+    //Reward of a state
     private double dblReward;
 
+    //Type of a state
     private EGridType objType;
 
     public CState(double pDblValue) {
